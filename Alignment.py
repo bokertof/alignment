@@ -3,6 +3,8 @@ from scipy.spatial import cKDTree
 
 class Alignment:
      def __init__(self, A, B):
+          
+         assert self.A.shape == self.B.shape
          self.A = A
          self.B = B
 
@@ -15,8 +17,6 @@ class Alignment:
               distances and indices nearest neighbor in B
           '''
 
-          assert self.A.shape == self.B.shape
-
           tree = cKDTree(self.B)
           distances, indices = tree.query(self.A, k=1)
           return distances, indices
@@ -28,7 +28,6 @@ class Alignment:
              R: DxD rotation matrix
              
           '''
-          assert self.A.shape == self.B.shape
 
           # translate centroids of two point clouds to zero
           centroid_A = np.mean(self.A, axis=0)
@@ -60,7 +59,7 @@ class Alignment:
      def get_RMSD(self):
         ''' Returns:
             RMSD between two structures
-         '''
+        '''
         dists,_ = Alignment.nearest_neighbor(self)
 
         RMSD = (sum([i**2 for i in dists])/self.number)**0.5
